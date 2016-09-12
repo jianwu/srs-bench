@@ -29,7 +29,7 @@ else
     echo "build st-1.9t"; 
     (
         rm -rf ${GLOBAL_DIR_OBJS}/st-1.9 && cd ${GLOBAL_DIR_OBJS} && unzip ../3rdparty/st-1.9.zip && cd st-1.9 && 
-        patch -p0 < ../../3rdparty/patches/1.st.arm.patch &&
+        #patch -p0 < ../../3rdparty/patches/1.st.arm.patch &&
         make EXTRA_CFLAGS="${_ST_EXTRA_CFLAGS}" ${_ST_MAKE}
     )
 fi
