@@ -27,6 +27,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <stdlib.h>
 
 #include <string>
+#include <iostream>
 using namespace std;
 
 // project lib
@@ -147,14 +148,17 @@ int main(int argc, char** argv){
     }
 
     
-    for(int i = 0; i < threads; i++){
+//    for(int i = 0; i < threads; i++){
+    for (std::string line; std::getline(std::cin, line);) {
         StRtmpPublishTask* task = new StRtmpPublishTask();
 
         char index[16];
+        int i=0;
         snprintf(index, sizeof(index), "%d", i);
         
         std::string _index = index;
-        std::string rtmp_url = url;
+        //std::string rtmp_url = url;
+        std::string rtmp_url = line;
         size_t pos = std::string::npos;
         if ((pos = rtmp_url.find("{i}")) != std::string::npos) {
             rtmp_url = rtmp_url.replace(pos, 3, _index);

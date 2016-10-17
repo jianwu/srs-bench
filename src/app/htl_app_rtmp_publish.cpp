@@ -79,22 +79,27 @@ int StRtmpPublishClient::Publish(string input, RtmpUrl* url){
     }
 
     int64_t timebase = 0;
-    while (true) {
-        int32_t starttime = -1;
-        int32_t endtime = -1;
-        
-        // publish the whole av of flv file
-        ret = PublishAV(flv, timebase, &starttime, &endtime);
-        
-        // restart when flv EOF
-        if (srs_flv_is_eof(ret)) {
-            srs_flv_lseek(flv, 0);
-            timebase += endtime - starttime;
-            Info("republish for flv EOF, timebase=%"PRId64", start=%d, end=%d, ret=%d", 
-                timebase, starttime, endtime, ret);
-            continue;
-        }
-    }
+    int32_t starttime = -1;
+    int32_t endtime = -1;
+
+    // publish the whole av of flv file
+    ret = PublishAV(flv, timebase, &starttime, &endtime);
+//    while (true) {
+//        int32_t starttime = -1;
+//        int32_t endtime = -1;
+//
+//        // publish the whole av of flv file
+//        ret = PublishAV(flv, timebase, &starttime, &endtime);
+//
+//        // restart when flv EOF
+//        if (srs_flv_is_eof(ret)) {
+//            srs_flv_lseek(flv, 0);
+//            timebase += endtime - starttime;
+//            Info("republish for flv EOF, timebase=%"PRId64", start=%d, end=%d, ret=%d",
+//                timebase, starttime, endtime, ret);
+//            continue;
+//        }
+//    }
     srs_flv_close(flv);
     
     if(ret != ERROR_SUCCESS){
