@@ -71,7 +71,7 @@ int discovery_options(int argc, char** argv,
     }
     
     // check values
-    if(url == "" || input == ""){
+    if(/*url == "" ||*/ input == ""){
         show_help = true;
         return ret;
     }
@@ -100,6 +100,8 @@ void help(char** argv){
         "   %s -i %s -c 10000 -r %s\n"
         "4. start 100000 clients\n"
         "   %s -i %s -c 100000 -r %s\n"
+        "5. -t specify the repeat count, default is 1. 0 means infinite. \n"
+        "If -r parameter is not provied, the URLs will be read from stdin, line by line, -c parameter will be ignored"
         "\n"
         "This program built for %s.\n"
         "Report bugs to <%s>\n",
@@ -147,31 +149,43 @@ int main(int argc, char** argv){
         return ret;
     }
 
-    
-//    for(int i = 0; i < threads; i++){
-    for (std::string line; std::getline(std::cin, line);) {
-        StRtmpPublishTask* task = new StRtmpPublishTask();
+    if(url == "") {
+        for (std::string line; std::getline(std::cin, line);) {
+            StRtmpPublishTask* task = new StRtmpPublishTask();
 
-        char index[16];
-        int i=0;
-        snprintf(index, sizeof(index), "%d", i);
-        
-        std::string _index = index;
-        //std::string rtmp_url = url;
-        std::string rtmp_url = line;
-        size_t pos = std::string::npos;
-        if ((pos = rtmp_url.find("{i}")) != std::string::npos) {
-            rtmp_url = rtmp_url.replace(pos, 3, _index);
+            if((ret = task->Initialize(input, line, start, delay, error, count)) != ERROR_SUCCESS){
+                Error("initialize task failed, input=%s, url=%s, ret=%d", input.c_str(), line.c_str(), ret);
+                return ret;
+            }
+
+            if((ret = farm.Spawn(task)) != ERROR_SUCCESS){
+                Error("st farm spwan task failed, ret=%d", ret);
+                return ret;
+            }
         }
-        
-        if((ret = task->Initialize(input, rtmp_url, start, delay, error, count)) != ERROR_SUCCESS){
-            Error("initialize task failed, input=%s, url=%s, ret=%d", input.c_str(), rtmp_url.c_str(), ret);
-            return ret;
-        }
-        
-        if((ret = farm.Spawn(task)) != ERROR_SUCCESS){
-            Error("st farm spwan task failed, ret=%d", ret);
-            return ret;
+    } else {
+        for(int i = 0; i < threads; i++){
+            StRtmpPublishTask* task = new StRtmpPublishTask();
+
+            char index[16];
+            snprintf(index, sizeof(index), "%d", i);
+
+            std::string _index = index;
+            std::string rtmp_url = url;
+            size_t pos = std::string::npos;
+            if ((pos = rtmp_url.find("{i}")) != std::string::npos) {
+                rtmp_url = rtmp_url.replace(pos, 3, _index);
+            }
+
+            if((ret = task->Initialize(input, rtmp_url, start, delay, error, count)) != ERROR_SUCCESS){
+                Error("initialize task failed, input=%s, url=%s, ret=%d", input.c_str(), rtmp_url.c_str(), ret);
+                return ret;
+            }
+
+            if((ret = farm.Spawn(task)) != ERROR_SUCCESS){
+                Error("st farm spwan task failed, ret=%d", ret);
+                return ret;
+            }
         }
     }
     

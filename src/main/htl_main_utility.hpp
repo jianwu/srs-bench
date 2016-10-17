@@ -35,7 +35,7 @@ LogContext* context = new StLogContext();
 #define DefaultStartupSeconds 5.0
 #define DefaultErrorSeconds 3.0
 #define DefaultReportSeconds 30.0
-#define DefaultCount 0
+#define DefaultCount 1
 
 #define SharedOptions()\
         {"clients", required_argument, 0, 'c'}, \
