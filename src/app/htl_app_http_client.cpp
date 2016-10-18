@@ -231,7 +231,7 @@ int StHttpClient::Connect(HttpUrl* url){
     }
     
     if((ret = socket->Connect(ip.c_str(), url->GetPort())) != ERROR_SUCCESS){
-        Error("connect to server failed. ret=%d", ret);
+        Error("connect to server failed. ret=%d, url=%s", ret, url->GetUrl());
         return ret;
     }
     

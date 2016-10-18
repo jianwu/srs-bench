@@ -97,7 +97,7 @@ int StRtmpPlayClient::Connect(RtmpUrl* url){
     }
     
     if ((ret = srs_rtmp_connect_server(srs)) != ERROR_SUCCESS){
-        Error("connect to server failed. ret=%d", ret);
+        Error("connect to server failed. ret=%d, url=%s", ret, url->GetUrl());
         return ret;
     }
     
