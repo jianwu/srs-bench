@@ -218,7 +218,7 @@ int StRtmpPublishClient::PublishAV(srs_flv_t flv,
         if ((ret = srs_rtmp_write_packet(srs, type, dts, data, size)) != ERROR_SUCCESS) {
             return ret;
         }
-        Info("send message type=%d, size=%d, time=%d, dts=%d", 
+        Verbose("send message type=%d, size=%d, time=%d, dts=%d",
             type, size, timestamp, dts);
         
         if (re <= 0) {
